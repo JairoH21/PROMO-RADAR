@@ -7,9 +7,8 @@ def create_app():
 
     @app.route("/", methods=["GET"])
     def home():
-                code = request.args.get("code")
-
-        if code:
+                code = request.args.get("code"). 
+                if code:
             client_id = os.getenv("MELI_CLIENT_ID")
             client_secret = os.getenv("MELI_CLIENT_SECRET")
             redirect_uri = "https://promo-radar.onrender.com"
