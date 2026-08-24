@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request,redirect
 import requests
 import os
 
@@ -7,6 +7,49 @@ def create_app():
 
     @app.route("/", methods=["GET"])
     def home():
+                code = request.args.get("code")
+
+        if code:
+            client_id = os.getenv("MELI_CLIENT_ID")
+            client_secret = os.getenv("MELI_CLIENT_SECRET")
+            redirect_uri = "https://promo-radar.onrender.com"
+
+            try:
+                resposta_token = requests.post(
+                    "https://api.mercadolibre.com/oauth/token",
+                    data={
+                        "grant_type": "authorization_code",
+                        "client_id": client_id,
+                        "client_secret": client_secret,
+                        "code": code,
+                        "redirect_uri": redirect_uri
+                    },
+                    headers={
+                        "accept": "application/json",
+                        "content-type": "application/x-www-form-urlencoded"
+                    },
+                    timeout=10
+                )
+
+                dados_token = resposta_token.json()
+
+                if resposta_token.ok:
+                    access_token = dados_token.get("access_token", "")
+                    refresh_token = dados_token.get("refresh_token", "")
+
+                    return f"""
+                    <h2>Mercado Livre conectado com sucesso ✅</h2>
+                    <p>Copie o Access Token abaixo e coloque no Render.</p>
+                    <textarea style="width:90%;height:100px">{access_token}</textarea>
+                    <p>Guarde também o Refresh Token em local seguro:</p>
+                    <textarea style="width:90%;height:100px">{refresh_token}</textarea>
+                    <p><b>Não envie esses tokens para ninguém.</b></p>
+                    """
+
+                return f"Erro ao gerar token: {dados_token}"
+
+            except Exception as erro:
+                return f"Erro na autenticação: {erro}"
         busca = request.args.get("q", "").strip()
 
         produtos = []
