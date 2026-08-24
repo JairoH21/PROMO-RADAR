@@ -11,43 +11,42 @@ def create_app():
 
         produtos = []
 
-        if busca:
+                if busca:
             try:
                 access_token = os.getenv("MERCADO_LIVRE_ACCESS_TOKEN")
-        
 
-        headers = {}
-        if access_token:
-            headers["Authorization"] = f"Bearer {access_token}"
+                headers = {}
+                if access_token:
+                    headers["Authorization"] = f"Bearer {access_token}"
 
-        url = "https://api.mercadolibre.com/sites/MLB/search"
+                url = "https://api.mercadolibre.com/sites/MLB/search"
 
-        resposta = requests.get(
-            url,
-            params={
-                "q": busca,
-                "limit": 10
-            },
-            headers=headers,
-            timeout=10
-        )
+                resposta = requests.get(
+                    url,
+                    params={
+                        "q": busca,
+                        "limit": 10
+                    },
+                    headers=headers,
+                    timeout=10
+                )
 
-        resposta.raise_for_status()
-        dados = resposta.json()
+                resposta.raise_for_status()
+                dados = resposta.json()
 
-        for item in dados.get("results", []):
-            preco = item.get("price", 0)
+                for item in dados.get("results", []):
+                    preco = item.get("price", 0)
 
-            produtos.append({
-                "nome": item.get("title", "Produto"),
-                "loja": "Mercado Livre",
-                "preco": f"R$ {preco:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."),
-                "desconto": "Oferta",
-                "link": item.get("permalink", "#")
-            })
+                    produtos.append({
+                        "nome": item.get("title", "Produto"),
+                        "loja": "Mercado Livre",
+                        "preco": f"R$ {preco:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."),
+                        "desconto": "Oferta",
+                        "link": item.get("permalink", "#")
+                    })
 
-    except Exception as erro:
-        print("Erro Mercado Livre:", erro)
+            except Exception as erro:
+                print("Erro Mercado Livre:", erro)
                 
                     
             
