@@ -143,10 +143,10 @@ def create_app():
                 
 
                 print("STATUS ML:", resposta.status_code)
-print("RESPOSTA ML:", resposta.text)
+                print("RESPOSTA ML:", resposta.text)
 
-resposta.raise_for_status()
-dados = resposta.json()
+                resposta.raise_for_status()
+                dados = resposta.json()
             
 
                 for item in dados.get("results", []):
