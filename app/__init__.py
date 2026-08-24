@@ -1,4 +1,6 @@
 from flask import Flask, request
+import requests
+import os
 
 def create_app():
     app = Flask(__name__)
@@ -10,26 +12,45 @@ def create_app():
         produtos = []
 
         if busca:
-            produtos = [
-                {
-                    "nome": f"{busca} - Oferta 1",
-                    "loja": "Mercado Livre",
-                    "preco": "R$ 199,90",
-                    "desconto": "15% OFF"
-                },
-                {
-                    "nome": f"{busca} - Oferta 2",
-                    "loja": "Amazon",
-                    "preco": "R$ 219,90",
-                    "desconto": "10% OFF"
-                },
-                {
-                    "nome": f"{busca} - Oferta 3",
-                    "loja": "Shopee",
-                    "preco": "R$ 189,90",
-                    "desconto": "20% OFF"
-                }
-            ]
+            try:
+                access_token = os.getenv("MERCADO_LIVRE_ACCESS_TOKEN")
+        
+
+        headers = {}
+        if access_token:
+            headers["Authorization"] = f"Bearer {access_token}"
+
+        url = "https://api.mercadolibre.com/sites/MLB/search"
+
+        resposta = requests.get(
+            url,
+            params={
+                "q": busca,
+                "limit": 10
+            },
+            headers=headers,
+            timeout=10
+        )
+
+        resposta.raise_for_status()
+        dados = resposta.json()
+
+        for item in dados.get("results", []):
+            preco = item.get("price", 0)
+
+            produtos.append({
+                "nome": item.get("title", "Produto"),
+                "loja": "Mercado Livre",
+                "preco": f"R$ {preco:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."),
+                "desconto": "Oferta",
+                "link": item.get("permalink", "#")
+            })
+
+    except Exception as erro:
+        print("Erro Mercado Livre:", erro)
+                
+                    
+            
 
         cards = ""
 
@@ -40,7 +61,9 @@ def create_app():
                 <h3>{produto['nome']}</h3>
                 <p class="loja">{produto['loja']}</p>
                 <p class="preco">{produto['preco']}</p>
-                <button>Ver oferta</button>
+                <a href="{produto['link']}" target="_blank">
+    <button>Ver oferta</button>
+</a>
             </div>
             """
 
