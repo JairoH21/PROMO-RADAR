@@ -5,17 +5,18 @@ import os
 def create_app():
     app = Flask(__name__)
 
-    @app.route("/", methods=["GET"])
+        @app.route("/", methods=["GET"])
     def home():
-                code = request.args.get("code")
-                if code:
+        code = request.args.get("code")
+
+        if code:
             client_id = os.getenv("MELI_CLIENT_ID")
             client_secret = os.getenv("MELI_CLIENT_SECRET")
             redirect_uri = "https://promo-radar.onrender.com"
 
             try:
-                resposta_token = requests.post(
-                    "https://api.mercadolibre.com/oauth/token",
+                              resposta_token = requests.post(      
+                                  "https://api.mercadolibre.com/oauth/token",
                     data={
                         "grant_type": "authorization_code",
                         "client_id": client_id,
