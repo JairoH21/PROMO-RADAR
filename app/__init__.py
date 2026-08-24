@@ -142,8 +142,12 @@ def create_app():
 )
                 
 
-                resposta.raise_for_status()
-                dados = resposta.json()
+                print("STATUS ML:", resposta.status_code)
+print("RESPOSTA ML:", resposta.text)
+
+resposta.raise_for_status()
+dados = resposta.json()
+            
 
                 for item in dados.get("results", []):
                     preco = item.get("price", 0)
