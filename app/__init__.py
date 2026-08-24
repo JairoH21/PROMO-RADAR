@@ -10,8 +10,7 @@ def create_app():
         busca = request.args.get("q", "").strip()
 
         produtos = []
-
-                if busca:
+        if busca:
             try:
                 access_token = os.getenv("MERCADO_LIVRE_ACCESS_TOKEN")
 
