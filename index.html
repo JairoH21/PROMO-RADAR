@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PromoRadar Brasil</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+<div><h1>🔥 PromoRadar Brasil</h1><p>Versão 2 • preparado para Render</p></div>
+<form method="post" action="/scan"><button>⚡ Captar agora</button></form>
+</header>
+<main>
+{% with messages = get_flashed_messages() %}
+{% for msg in messages %}<div class="notice">{{ msg }}</div>{% endfor %}
+{% endwith %}
+<section class="card">
+<h2>Monitorar produtos</h2>
+<form method="post" action="/keyword" class="add">
+<input name="term" placeholder="Ex.: Nissan Sentra 2008" required>
+<button>Adicionar</button>
+</form>
+<div class="tags">
+{% for k in keywords %}<span>{{ k["term"] }}</span>
+{% else %}<small>Adicione uma palavra-chave.</small>{% endfor %}
+</div>
+</section>
+<section>
+<h2>Ofertas</h2>
+<div class="grid">
+{% for o in offers %}
+<article class="offer">
+{% if o["image_url"] %}<img src="{{ o["image_url"] }}" alt="">{% endif %}
+<div class="content"><small>{{ o["source"] }}</small>
+<h3>{{ o["title"] }}</h3>
+<div class="prices">
+{% if o["old_price"] %}<del>R$ {{ "%.2f"|format(o["old_price"]) }}</del>{% endif %}
+<strong>R$ {{ "%.2f"|format(o["price"]) }}</strong>
+{% if o["discount"] %}<b>{{ "%.0f"|format(o["discount"]) }}% OFF</b>{% endif %}
+</div>
+<p class="score">{{ o["score"] }}</p>
+<a href="{{ o['url'] }}" target="_blank" rel="noopener">Ver oferta</a>
+</div></article>
+{% else %}<p>Nenhuma oferta captada ainda.</p>{% endfor %}
+</div>
+</section>
+</main>
+</body>
+</html>
