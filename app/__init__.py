@@ -131,19 +131,15 @@ def create_app():
                         f"Bearer {access_token}"
                     )
 
-                url = (
-                    "https://api.mercadolibre.com/"
-                    "sites/MLB/search"
+                url = "https://api.mercadolibre.com/users/me"
+                    
+    
                 )
-
                 resposta = requests.get(
-                    url,
-                    params={
-                        "q": busca,
-                        "limit": 10
-                    },
-                    headers=headers,
-                    timeout=10
+    url,
+    headers=headers,
+    timeout=10
+)
                 )
 
                 resposta.raise_for_status()
