@@ -134,13 +134,13 @@ def create_app():
                 url = "https://api.mercadolibre.com/users/me"
                     
     
-                )
+                
                 resposta = requests.get(
     url,
     headers=headers,
     timeout=10
 )
-                )
+                
 
                 resposta.raise_for_status()
                 dados = resposta.json()
